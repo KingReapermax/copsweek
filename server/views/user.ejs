@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%if(locals.user){%><%=locals.user%><%}%></title>
+        <link href="styles.css" rel="stylesheet" type="text/css">
+    </head>
+    <%- include('partials/header.ejs') %>
+    <div class="user">
+        <div id="navbar">
+            <h1 class="title"><%if(locals.user){%>Hello there, <%=locals.user%>!<%}%></h1>
+            <button onclick="location.href='/dashboard'">Home</button>
+            <button onclick="location.href='/logout'">Logout</button>
+        </div>
+        
+    
+        <div class="profile">
+            <h2>Profile</h2>
+            <div class="form">
+                <form action="/user" method="POST">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" value="<%=locals.user%>" required>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" value="<%=locals.email%>" required>
+                    <label for="password">Password</label>
+                    <input type="password" name="password" required>
+                    <button type="submit">Update</button>
+                </form>
+            </div>
+            
+        </div>
+    </div>  
+    <%- include('partials/footer.ejs') %>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Dashboard</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+
+    </head>
+    <%- include('partials/header.ejs') %>
+    <div class="dashboard">
+        <div id="navbar">
+            <h1 class="title">Dashboard</h1>
+            <button onclick="location.href='/profile'">Profile</button>
+            <button onclick="location.href='/logout'">Logout</button>
+        </div>
+        <div class="addTask">
+            <h2>Add Task</h2>
+            <form action="/tasks" method="POST">
+                
+                <input type="text" name="task" placeholder="Task" required>
+                <select name="type" required>
+                    <option value="roads">Roads</option>
+                    <option value="water">Water</option>
+                    <option value="electricity">Electricity</option>
+                    <option value="sewage">Sewage</option>
+                    <option value="other">Other</option>
+                </select>
+                <button type="submit" onclick="reloadTasks()">Add</button>
+            </form>
+        </div>
+        <%if(locals.tasks.length > 0){%>
+            <div class="tasks">
+                <h2>Tasks</h2>
+                
+                <ul id="taskList"></ul>
+            </div>
+        
+            
+        <%}%>
+        
+            
+    </div>
+    <%- include('partials/footer.ejs') %>
+    <script>
+        async function deleteTask(taskId){
+            const response = await axios.delete(`/tasks/${taskId}`);
+            if(response.status === 200){
+                reloadTasks();
+            }else{
+                alert('Failed to delete task');
+            }
+            reloadTasks();
+        }
+        async function reloadTasks(){
+            const response = await axios.get('/dashboard');
+            if(response.status === 200){
+                const tasks = await()=>{
+                    return axios.get('/tasks');
+                };
+                const taskList = document.getElementById('taskList');
+                taskList.innerHTML = '';
+                tasks.forEach(task => {
+                    const li = document.createElement('li');
+                    li.innerHTML = "<span>${task.task }</span><span>${task.type }</span><button onclick="deleteTask(${task._id})">Delete</button>";                  
+                    
+                    taskList.appendChild(li);
+                });
+            }
+        }
+        
+        reloadTasks();
+    </script>
+    
+</html>

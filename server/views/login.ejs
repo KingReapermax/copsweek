@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Login</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+    <%- include('partials/header.ejs') %>
+    <div class="login container1">
+        <%if(locals.message){%>
+        <p class="error"><%=locals.message%></p>
+        <%}%>
+        <h1>Login</h1>
+        <div class="form"></div>
+            <form action="/login" method="POST">
+                
+                    <label for="email">Email</label>
+                    <input type="email" name="email" required>
+                    <label for="password">Password</label>
+                    <input type="password" name="password" required>
+                    <button type="submit">Login</button>
+                
+            </form>
+            <p class="message">Not registered? <a href="/register">Create an account</a></p>
+        </div>
+    </div>
+    <%- include('partials/footer.ejs') %>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Register</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+    <%- include('partials/header.ejs') %>
+    <div class="register container1">
+        <%if(locals.message){%>
+            <p class="error"><%=locals.message%></p>
+        <%}%>
+        <h1>Register</h1>
+        <div class="form"></div>
+            <form action="/register" method="POST">
+            
+                <label for="name">Name</label>
+                <input type="text" name="name" required>
+                <label for="email">Email</label>
+                <input type="email" name="email" required>
+                <label for="password">Password</label>
+                <input type="password" name="password" required>
+                <button type="submit" onclick="handleSubmit()">Register</button>
+            
+            </form>
+            <p class="message">Already registered? <a href="/login">Login</a></p>
+        </div>
+
+    </div>
+    <%- include('partials/footer.ejs') %>
+    <script>
+        async function handleSubmit(event){
+            event.preventDefault();
+            const res = await axios.post('/register', {
+                name: document.querySelector('input[name="name"]').value,
+                email: document.querySelector('input[name="email"]').value,
+                password: document.querySelector('input[name="password"]').value
+            });
+            
+            if(res.status!==200){
+                return window.location.href = '/dashboard';
+            }
+        }
+    </script>
+</html>
