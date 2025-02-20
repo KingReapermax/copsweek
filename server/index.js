@@ -1,6 +1,5 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {v4 as uuidv4} from 'uuid';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import bcrypt from 'bcrypt';
@@ -24,9 +23,12 @@ const db = new pg.Client({
 db.connect();
 // let users = db.query('SELECT * FROM users');
 // let tasks = db.query('SELECT * FROM tasks');
-async function user_tasks(user){
-    let tasks = await db.query("select * from tasks where tasks.email=$1", [user.email]);
-    return tasks;
+
+
+async function user_tasks(email){
+    let tasks = await db.query("select (task, type) from tasks where tasks.email=$1", [email]);
+
+    return tasks.rows;
 }
 app.use(cors());
 app.use(bodyParser.json());
@@ -43,12 +45,13 @@ const authenticate = (req, res, next) => {
     try {
         const verified = jwt.verify(token, SECRET);
         req.user = verified;
+        
         next();
     } catch (err) {
         return res.status(403).json({ message: "Invalid token" });
     }
 };
-let users=[];
+// let users=[];
 
 app.get(['/', '/login'], (req, res) => {
     if (req.cookies.token) {
@@ -57,40 +60,49 @@ app.get(['/', '/login'], (req, res) => {
     res.render('login.ejs');
 });
 app.get('/dashboard', authenticate, (req, res) => {
-    res.render('dashboard.ejs', { tasks: req.user.tasks });
+    res.render('dashboard.ejs', {tasks: user_tasks(req.user.email)});
 });
 app.post('/login', async (req, res) => {
     const {email, password} = req.body;
-    const user = users.find(user=> user.email===email);
-    if(user==null){
-        return res.render('login.ejs', {message: 'User not found'});
-    } 
-    await bcrypt.compare(password, user.password, (err, result) => {
-        if(error){
-            return res.render('login.ejs', {message: 'Invalid password'});
-        }
-        if(result){
-            const token = jwt.sign({email: user.email}, SECRET, {expiresIn: '1h'});
-            res.cookie('token', token, {httpOnly: true });
-            return res.render('/dashboard', {tasks: user.tasks});
-        }
-    });
+    try{
+        const result = await db.query('SELECT * FROM users WHERE email=$1', [email.toLowerCase()]);
+        let user = result.rows[0];
+        if(user==null||result.rows.length!=1){
+            return res.render('login.ejs', {message: 'User not found'});
+        } 
+        bcrypt.compare(password, user.password, (err, result) => {
+            if(err){
+                return res.render('login.ejs', {message: 'Invalid password'});
+            }
+            if(result){
+                const token = jwt.sign({email: email.toLowerCase()}, SECRET, {expiresIn: '1h'});
+                res.cookie('token', token, {httpOnly: true });
+                return res.redirect('/dashboard');
+            }
+        });
+    }catch(err){
+        res.status(502).send({message: 'Error logging in'});
+    }
 });
 app.get('/register', (req, res) => {
     res.render('register.ejs');
 });
 app.post('/register', async (req, res) => {
     const {name, email, password} = req.body;
-    const user = users.find(user=> user.email===email);
-    if(user!=null){
+    const result = await db.query('SELECT * FROM users WHERE email=$1', [email.toLowerCase()]);
+    // let user = result.rows[0]['name'];
+    if(result.length>1){
         return res.render('/register.ejs', {message: 'User already exists'});
     }
 
     try{
         const hashedPassword = await bcrypt.hash(password, 10);
-        users.push({email, password: hashedPassword, tasks: {}});
-        console
+        // users.push({email, password: hashedPassword, tasks: {}});
+    
+
+        await db.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email.toLowerCase(), hashedPassword]);
         res.status(200).redirect('/login');
+        
     } catch(error){
         res.status(502).send({message: 'Error creating user'});
     }
@@ -99,15 +111,16 @@ app.get('/logout', (req, res) => {
     res.clearCookie('token');
     res.redirect('/login');
 });
-app.get('/tasks', authenticate, (req, res) => {
-    res.json(req.user.tasks);
+app.get('/tasks', authenticate, async (req, res) => {
+    res.redirect('/dashboard');
 });
-app.post('/tasks', authenticate, (req, res) => {
-    const {task} = req.body;
-    const taski = {id: uuidv4(), task};
+app.post('/tasks', authenticate, async (req, res) => {
+    const task = req.body;
+    console.log(task, req.user.email);
     try{
-        req.user.tasks.push(task);
-        res.status(201).json({ message: "Task added" });
+        await db.query('INSERT INTO tasks (task, email, type) VALUES ($1, $2, $3)', [task.task, req.user.email, task.type]);
+        
+        res.status(201);
     }catch(err){
         res.status(500);
     }

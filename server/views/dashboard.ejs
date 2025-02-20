@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Dashboard</title>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
         <link rel="stylesheet" type="text/css" href="styles.css">
 
     </head>
@@ -27,16 +28,23 @@
                 <button type="submit" onclick="reloadTasks()">Add</button>
             </form>
         </div>
-        <%if(locals.tasks.length > 0){%>
-            <div class="tasks">
-                <h2>Tasks</h2>
-                
-                <ul id="taskList"></ul>
-            </div>
+    
+        <div class="tasks">
+            <h2>Tasks</h2>
+            
+            <ul id="taskList">
+                <%for(let i=0; i<tasks.length; i++){%>
+                    <li>
+                        <span><%=tasks[i].task %></span>
+                        <span><%=tasks[i].type %></span>
+                        <button onclick="deleteTask(<%=tasks[i].task_id%>)">Delete</button>
+                    </li>
+                <%}%>
+            </ul>
+        </div>
         
             
-        <%}%>
-        
+      
             
     </div>
     <%- include('partials/footer.ejs') %>
@@ -51,20 +59,24 @@
             reloadTasks();
         }
         async function reloadTasks(){
-            const response = await axios.get('/dashboard');
-            if(response.status === 200){
-                const tasks = await()=>{
-                    return axios.get('/tasks');
-                };
-                const taskList = document.getElementById('taskList');
-                taskList.innerHTML = '';
-                tasks.forEach(task => {
-                    const li = document.createElement('li');
-                    li.innerHTML = "<span>${task.task }</span><span>${task.type }</span><button onclick="deleteTask(${task._id})">Delete</button>";                  
-                    
-                    taskList.appendChild(li);
-                });
+            // const response = await axios.get('/dashboard');
+           
+            try{
+            const tasks = await axios.get('/tasks');
+            // console.log(tasks);
+            // const taskList = document.getElementById('taskList');
+            // taskList.innerHTML = '';
+            // tasks.forEach((task) => {
+            //     const li = document.createElement('li');
+            //     li.innerHTML = `<span>${task.task }</span><span>${task.type }</span><button onclick="deleteTask(${task.task_id})">Delete</button>`;                  
+                
+            //     taskList.appendChild(li);
+            // });
+            }catch(err){
+                console.log(err);
+            
             }
+            
         }
         
         reloadTasks();
