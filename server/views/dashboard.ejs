@@ -33,11 +33,11 @@
             <h2>Tasks</h2>
             
             <ul id="taskList">
-                <%for(let i=0; i<tasks.length; i++){%>
+                <%for(let i=0; i<locals.tasks.length; i++){%>
                     <li>
-                        <span><%=tasks[i].task %></span>
-                        <span><%=tasks[i].type %></span>
-                        <button onclick="deleteTask(<%=tasks[i].task_id%>)">Delete</button>
+                        <span><%=locals.tasks[i].task %></span>
+                        <span><%=locals.tasks[i].type %></span>
+                        <button onclick="deleteTask(<%=locals.tasks[i].task_id%>)">Delete</button>
                     </li>
                 <%}%>
             </ul>
@@ -51,9 +51,7 @@
     <script>
         async function deleteTask(taskId){
             const response = await axios.delete(`/tasks/${taskId}`);
-            if(response.status === 200){
-                reloadTasks();
-            }else{
+            if(response.status !== 200){
                 alert('Failed to delete task');
             }
             reloadTasks();

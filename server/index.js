@@ -48,7 +48,7 @@ const authenticate = (req, res, next) => {
         
         next();
     } catch (err) {
-        return res.status(403).json({ message: "Invalid token" });
+        return res.redirect('/logout');
     }
 };
 // let users=[];
@@ -120,7 +120,7 @@ app.post('/tasks', authenticate, async (req, res) => {
     try{
         await db.query('INSERT INTO tasks (task, email, type) VALUES ($1, $2, $3)', [task.task, req.user.email, task.type]);
         
-        res.status(201);
+        res.redirect('/dashboard');     
     }catch(err){
         res.status(500);
     }
