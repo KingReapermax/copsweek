@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Register</title>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
         <link rel="stylesheet" type="text/css" href="styles.css">
     </head>
     <%- include('partials/header.ejs') %>
@@ -11,7 +12,7 @@
         <%}%>
         <h1>Register</h1>
         <div class="form"></div>
-            <form action="/register" method="POST">
+            <form action="/register" method="POST" onsubmit="handleSubmit(event)" >
             
                 <label for="name">Name</label>
                 <input type="text" name="name" required>
@@ -19,7 +20,7 @@
                 <input type="email" name="email" required>
                 <label for="password">Password</label>
                 <input type="password" name="password" required>
-                <button type="submit" onclick="handleSubmit()">Register</button>
+                <button type="submit" >Register</button>
             
             </form>
             <p class="message">Already registered? <a href="/login">Login</a></p>
@@ -29,16 +30,23 @@
     <%- include('partials/footer.ejs') %>
     <script>
         async function handleSubmit(event){
+            try{
             event.preventDefault();
             const res = await axios.post('/register', {
                 name: document.querySelector('input[name="name"]').value,
                 email: document.querySelector('input[name="email"]').value,
                 password: document.querySelector('input[name="password"]').value
+            },{
+                headers:{'Accept': 'applications/json'}
             });
-            
             if(res.status!==200){
                 return window.location.href = '/register';
             }
+            
+        }catch(err){
+            console.log(err);
+        }
+            
         }
     </script>
 </html>

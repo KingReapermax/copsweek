@@ -10,7 +10,7 @@
     <div class="dashboard">
         <div id="navbar">
             <h1 class="title">Dashboard</h1>
-            <button onclick="window.location.href='/profile'">Profile</button>
+            <button onclick="window.location.href='/profile'">Update Profile</button>
             <button onclick="window.location.href='/logout'">Logout</button>
         </div>
         <div class="addTask">
@@ -38,7 +38,7 @@
                     <li>
                         <span><%=task.task %></span>
                         <span><%=task.type %></span>
-                        <button onclick="deleteTask(<%=task.task_id%>)">Delete</button>
+                        <button onclick="deleteTask('<%=task.task_id%>')">Delete</button>
                     </li>
                 <%});%>
             </ul>
