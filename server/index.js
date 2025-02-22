@@ -54,7 +54,9 @@ async function find_user(email){
 
 const authenticate = (req, res, next) => {
     const token = req.cookies.token;
-    if (!token) return res.status(401).json({ message: "Unauthorized" });
+    if (!token) {
+        return res.redirect('/login');
+    }
 
     try {
         const verified = jwt.verify(token, SECRET);
@@ -110,11 +112,14 @@ app.post('/register', async (req, res) => {
     const name=data.name;
     const email=data.email;
     const password=data.password;
+    console.log(name, email.toLowerCase(), password);
 
     const result = await db.query('SELECT * FROM users WHERE email=$1', [email.toLowerCase()]);
+    console.log(result.rows, result.rows.length);
     // let user = result.rows[0]['name'];
-    if(result.length>1){
-        return res.render('/login.ejs', {message: 'User already exists'});
+    if(result.rows.length>0){
+        console.log('User already exists');
+        return res.render('login.ejs', {message: 'User already exists'});
     }
 
     try{
@@ -123,10 +128,12 @@ app.post('/register', async (req, res) => {
     
 
         await db.query('INSERT INTO users (name, email, password) VALUES ($1, $2, $3)', [name, email.toLowerCase(), hashedPassword]);
+        console.log('User registered');
         res.status(200).redirect('/login');
         
     } catch(error){
-        res.status(502).send({message: 'Error creating user'});
+        console.log('Error registering user');
+        res.status(502).render('register.ejs', {message: 'Error registering user'});
     }
 });
 app.get('/logout', (req, res) => {
