@@ -2,6 +2,7 @@
 <html>
     <head>
         <title><%if(locals.user){%><%=locals.user%><%}%></title>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 
         <link href="styles.css" rel="stylesheet" type="text/css">
     </head>
     <%- include('partials/header.ejs') %>
@@ -14,20 +15,83 @@
         
     
         <div class="profile">
-            <h2>Profile</h2>
+            <h2>Update Profile</h2>
             <div class="form">
-                <form action="/user" method="POST">
+                <form action='/profile' method="POST" onsubmit="updateUser(event)">
                     <label for="name">Name</label>
                     <input type="text" name="name" value="<%=locals.user%>" required>
-                    <label for="email">Email</label>
-                    <input type="email" name="email" value="<%=locals.email%>" required>
-                    <label for="password">Password</label>
-                    <input type="password" name="password" required>
-                    <button type="submit">Update</button>
+                    <label for="new_password">Password</label>
+                    <input type="password" name="new_password" required>
+                    <label for="old_password">Old Password</label>
+                    <input type="password" name="old_password" required>
+                    <button id = "update-btn" type="submit">Update</button>
                 </form>
             </div>
             
         </div>
+        <div class="">
+            <form method="POST" action="/profile_delete" onsubmit="deleteUser(event)">
+                <h2>Delete Account</h2>
+                <p>Warning: This action is irreversible</p>
+                <input type="password" name="password" required>
+                <button id="delete-btn" type="submit">Delete Account</button>
+            </form>
+        </div>
     </div>  
     <%- include('partials/footer.ejs') %>
+    <script>
+        async function updateUser(event){
+            event.preventDefault();
+            const old_password = document.querySelector('input[name="old_password"]').value;
+            const new_password = document.querySelector('input[name="new_password"]').value;
+            if(old_password === new_password){
+                return alert('Old password and new password cannot be the same');
+            }
+            try{
+                const data = {
+                    name: document.querySelector('input[name="name"]').value,
+                    new_password: document.querySelector('input[name="new_password"]').value,
+                    old_password: document.querySelector('input[name="old_password"]').value
+                };
+                const res = await axios.post('/profile', data, {
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+
+                console.log(res.status, res.data);
+                alert('Profile updated');
+                window.location.href = '/profile';
+
+            }catch(err){
+                console.log(err);
+                alert('Error updating profile');
+                // window.location.href = '/profile';
+            }
+        }
+        async function deleteUser(event){
+            event.preventDefault();
+            const password = document.querySelector('input[name="password"]').value;
+            const data = {
+                password: password
+            };
+            try{
+                const res = await axios.post('/profile_delete', data, {
+                    
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                console.log(res.status, res.data);
+                alert('Account deleted');
+                window.location.href = '/logout';
+            }catch(err){
+                console.log(err);
+                alert('Error deleting account');
+            }
+        }
+        // document.querySelector('.form form').addEventListener('submit', (event)=>updateUser(event));
+        // document.querySelector('form[action="/profile"][method="DELETE"]').addEventListener('submit', (event)=>deleteUser(event));
+
+        
+    </script>
 </html>
