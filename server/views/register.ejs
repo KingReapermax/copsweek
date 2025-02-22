@@ -12,7 +12,7 @@
         <%}%>
         <h1>Register</h1>
         <div class="form"></div>
-            <form action="/register" method="POST" onsubmit="handleSubmit(event)" >
+            <form action="/register" method="POST">
             
                 <label for="name">Name</label>
                 <input type="text" name="name" required>
@@ -29,24 +29,24 @@
     </div>
     <%- include('partials/footer.ejs') %>
     <script>
-        async function handleSubmit(event){
-            try{
-            event.preventDefault();
-            const res = await axios.post('/register', {
-                name: document.querySelector('input[name="name"]').value,
-                email: document.querySelector('input[name="email"]').value,
-                password: document.querySelector('input[name="password"]').value
-            },{
-                headers:{'Accept': 'applications/json'}
-            });
-            if(res.status!==200){
-                return window.location.href = '/register';
-            }
+        // async function handleSubmit(event){
+        //     try{
+        //     event.preventDefault();
+        //     const res = await axios.post('/register', {
+        //         name: document.querySelector('input[name="name"]').value,
+        //         email: document.querySelector('input[name="email"]').value,
+        //         password: document.querySelector('input[name="password"]').value
+        //     },{
+        //         headers:{'Accept': 'applications/json'}
+        //     });
+        //     if(res.status!==200){
+        //         return window.location.href = '/register';
+        //     }
             
-        }catch(err){
-            console.log(err);
-        }
+        // }catch(err){
+        //     console.log(err);
+        // }
             
-        }
+        // }
     </script>
 </html>

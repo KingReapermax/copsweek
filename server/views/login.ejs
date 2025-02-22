@@ -4,11 +4,12 @@
         <title>Login</title>
         <link rel="stylesheet" type="text/css" href="styles.css">
     </head>
+    <%if(locals.message){%>
+        <p class="error: "><%=locals.message%></p>
+    <%}%>
     <%- include('partials/header.ejs') %>
     <div class="login container1">
-        <%if(locals.message){%>
-        <p class="error"><%=locals.message%></p>
-        <%}%>
+        
         <h1>Login</h1>
         <div class="form"></div>
             <form action="/login" method="POST">
@@ -24,4 +25,7 @@
         </div>
     </div>
     <%- include('partials/footer.ejs') %>
+    <script>
+       
+    </script>
 </html>
