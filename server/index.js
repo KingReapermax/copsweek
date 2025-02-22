@@ -26,9 +26,12 @@ db.connect();
 
 
 async function user_tasks(email){
-    let tasks = await db.query("select (task, type) from tasks where tasks.email=$1", [email]);
-
+    const tasks = await db.query('SELECT * FROM tasks WHERE email=$1', [email]);
     return tasks.rows;
+}
+async function find_task(email, id){
+    const task = await db.query('select * from tasks where email=$1 and task_id=$2', [email, id]);
+    return task.rows[0];
 }
 app.use(cors());
 app.use(bodyParser.json());
@@ -59,8 +62,12 @@ app.get(['/', '/login'], (req, res) => {
     }
     res.render('login.ejs');
 });
-app.get('/dashboard', authenticate, (req, res) => {
-    res.render('dashboard.ejs', {tasks: user_tasks(req.user.email)});
+app.get('/dashboard', authenticate, async (req, res) => {
+    // console.log(req.user.email, await user_tasks(req.user.email));
+    // const tasksi = await user_tasks(req.user.email);
+    const tasksi = await user_tasks(req.user.email);
+    // console.log(tasksi);
+    res.render('dashboard.ejs', {tasks: tasksi});
 });
 app.post('/login', async (req, res) => {
     const {email, password} = req.body;
@@ -111,9 +118,9 @@ app.get('/logout', (req, res) => {
     res.clearCookie('token');
     res.redirect('/login');
 });
-app.get('/tasks', authenticate, async (req, res) => {
-    res.redirect('/dashboard');
-});
+// app.get('/tasks', authenticate, async (req, res) => {
+//     res.json(user_tasks(req.user.email));
+// });
 app.post('/tasks', authenticate, async (req, res) => {
     const task = req.body;
     console.log(task, req.user.email);
@@ -125,18 +132,21 @@ app.post('/tasks', authenticate, async (req, res) => {
         res.status(500);
     }
 });
-app.delete('/tasks/:id', authenticate, (req, res) => {
+app.delete('/tasks/:id', authenticate, async (req, res) => {
     const {id} = req.params;
-    const task = req.user.tasks.find(task => task.id === id);
+    console.log(id);
+    let task;
+    try{
+        task = await find_task(req.user.email, id);
+        await db.query('DELETE FROM tasks WHERE email=$1 and task_id=$2', [req.user.email, id]);
+        res.status(200).json({ message: "Task deleted"});
+    }catch(err){
+        res.status(500).json({ message: "Error deleting task"});
+    }
     if(!task){
         return res.status(404).json({ message: "Task not found" });
     }
-    try{
-        req.user.tasks = req.user.tasks.filter(task => task.id !== id);
-        res.status(200).json({ message: "Task deleted" });
-    }catch(err){
-        res.status(500).json({ message: "Error deleting task" });
-    }
+   
 });
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
