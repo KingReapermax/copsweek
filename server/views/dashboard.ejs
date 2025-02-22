@@ -10,8 +10,8 @@
     <div class="dashboard">
         <div id="navbar">
             <h1 class="title">Dashboard</h1>
-            <button onclick="location.href='/profile'">Profile</button>
-            <button onclick="location.href='/logout'">Logout</button>
+            <button onclick="window.location.href='/profile'">Profile</button>
+            <button onclick="window.location.href='/logout'">Logout</button>
         </div>
         <div class="addTask">
             <h2>Add Task</h2>
@@ -25,7 +25,7 @@
                     <option value="sewage">Sewage</option>
                     <option value="other">Other</option>
                 </select>
-                <button type="submit" onclick="reloadTasks()">Add</button>
+                <button type="submit" onclick="window.location.href='/dashboard'">Add</button>
             </form>
         </div>
     
@@ -33,13 +33,14 @@
             <h2>Tasks</h2>
             
             <ul id="taskList">
-                <%for(let i=0; i<locals.tasks.length; i++){%>
+                <% let tasks = locals.tasks %>
+                <% tasks.forEach((task)=>{%>
                     <li>
-                        <span><%=locals.tasks[i].task %></span>
-                        <span><%=locals.tasks[i].type %></span>
-                        <button onclick="deleteTask(<%=locals.tasks[i].task_id%>)">Delete</button>
+                        <span><%=task.task %></span>
+                        <span><%=task.type %></span>
+                        <button onclick="deleteTask(<%=task.task_id%>)">Delete</button>
                     </li>
-                <%}%>
+                <%});%>
             </ul>
         </div>
         
@@ -50,34 +51,21 @@
     <%- include('partials/footer.ejs') %>
     <script>
         async function deleteTask(taskId){
-            const response = await axios.delete(`/tasks/${taskId}`);
-            if(response.status !== 200){
-                alert('Failed to delete task');
-            }
-            reloadTasks();
-        }
-        async function reloadTasks(){
-            // const response = await axios.get('/dashboard');
-           
-            try{
-            const tasks = await axios.get('/tasks');
-            // console.log(tasks);
-            // const taskList = document.getElementById('taskList');
-            // taskList.innerHTML = '';
-            // tasks.forEach((task) => {
-            //     const li = document.createElement('li');
-            //     li.innerHTML = `<span>${task.task }</span><span>${task.type }</span><button onclick="deleteTask(${task.task_id})">Delete</button>`;                  
-                
-            //     taskList.appendChild(li);
-            // });
-            }catch(err){
-                console.log(err);
-            
-            }
+                try{
+                    let res = await axios.delete(`/tasks/${taskId}`);
+                    window.location.href='/dashboard';
+                    // console.log(res.status);  // 200 is succesful, 500 if backend problem, 404 if not found
+                    
+
+                }catch(err){
+                    console.log(err);
+                    alert('Error deleting task');
+                }
             
         }
         
-        reloadTasks();
+            
+        
     </script>
     
 </html>
