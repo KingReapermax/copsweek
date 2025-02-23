@@ -11,14 +11,14 @@ import cookieParser from 'cookie-parser';
 
 dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
-const SECRET = process.env.SECRET||'JHVTR^TIB*niuq8e';
+const PORT = process.env.PORT ;
+const SECRET = process.env.SECRET;
 const db = new pg.Client({
-    user: process.env.DB_USER||'postgres',
-    host: process.env.DB_HOST||'localhost',
-    database: process.env.DB_DATABASE||'copsweek',
-    password: process.env.DB_PASSWORD||'Ikshwak,123',
-    port: process.env.DB_PORT||5432,
+    user: process.env.DB_USER,
+    host: process.env.DB_HOST,
+    database: process.env.DB_DATABASE,
+    password: process.env.DB_PASSWORD,
+    port: process.env.DB_PORT,
 })
 db.connect();
 // let users = db.query('SELECT * FROM users');
