@@ -8,11 +8,13 @@
     </head>
     <%- include('partials/header.ejs') %>
     <div class="dashboard">
-        <div id="navbar">
+        <div class="navbar">
             <h1 class="title">Dashboard</h1>
             <button onclick="window.location.href='/profile'">Update Profile</button>
             <button onclick="window.location.href='/logout'">Logout</button>
         </div>
+
+            
         <div class="addTask">
             <h2>Add Task</h2>
             <form action="/tasks" method="POST">
@@ -30,14 +32,14 @@
         </div>
     
         <div class="tasks">
-            <h2>Tasks</h2>
+            <h2 id="task-head">Tasks</h2>
             
             <ul id="taskList">
                 <% let tasks = locals.tasks %>
                 <% tasks.forEach((task)=>{%>
-                    <li>
-                        <span><%=task.task %></span>
-                        <span><%=task.type %></span>
+                    <li class="task">
+                        <span class="task-content"><%=task.task %></span>
+                        <span class="task-type"><%=task.type %></span>
                         <button onclick="deleteTask('<%=task.task_id%>')">Delete</button>
                     </li>
                 <%});%>
@@ -45,10 +47,10 @@
         </div>
         
             
-      
+        <%- include('partials/footer.ejs') %>
             
     </div>
-    <%- include('partials/footer.ejs') %>
+    
     <script>
         async function deleteTask(taskId){
                 try{

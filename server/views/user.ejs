@@ -7,38 +7,42 @@
     </head>
     <%- include('partials/header.ejs') %>
     <div class="user">
-        <div id="navbar">
-            <h1 class="title"><%if(locals.user){%>Hello there, <%=locals.user%>!<%}%></h1>
-            <button onclick="location.href='/dashboard'">Home</button>
-            <button onclick="location.href='/logout'">Logout</button>
+        <h1 class="title"><%if(locals.user){%>Hello there, <%=locals.user%>!<%}%></h1>
+        <div class="navbar">
+            <button onclick="window.location.href='/dashboard'">Home</button>
+            <button onclick="window.location.href='/logout'">Logout</button>
         </div>
+        
         
     
         <div class="profile">
-            <h2>Update Profile</h2>
-            <div class="form">
+            
+            
                 <form action='/profile' method="POST" onsubmit="updateUser(event)">
+                    
+                    <h2 class="title">Update Profile</h2>
                     <label for="name">Name</label>
                     <input type="text" name="name" value="<%=locals.user%>" required>
                     <label for="new_password">Password</label>
                     <input type="password" name="new_password" required>
                     <label for="old_password">Old Password</label>
                     <input type="password" name="old_password" required>
+                     
                     <button id = "update-btn" type="submit">Update</button>
                 </form>
-            </div>
-            
+           
         </div>
-        <div class="">
+        <div class="delete">
             <form method="POST" action="/profile_delete" onsubmit="deleteUser(event)">
-                <h2>Delete Account</h2>
+                <h2 class="title">Delete Account</h2>
                 <p>Warning: This action is irreversible</p>
-                <input type="password" name="password" required>
+                <input type="password" name="password" placeholder="password"required>
                 <button id="delete-btn" type="submit">Delete Account</button>
             </form>
         </div>
+        <%- include('partials/footer.ejs') %>
     </div>  
-    <%- include('partials/footer.ejs') %>
+    
     <script>
         async function updateUser(event){
             event.preventDefault();
