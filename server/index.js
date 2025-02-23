@@ -87,17 +87,25 @@ app.post('/login', async (req, res) => {
     try{
         const result = await db.query('SELECT * FROM users WHERE email=$1', [email.toLowerCase()]);
         let user = result.rows[0];
+        console.log(user);
         if(user==null||result.rows.length!=1){
+            console.log('User not found');
             return res.render('login.ejs', {message: 'User not found'});
         } 
         bcrypt.compare(password, user.password, (err, result) => {
             if(err){
-                return res.render('login.ejs', {message: 'Invalid password'});
+                console.log('err comparing');
+                return res.render('login.ejs', {message: 'please try again'});
             }
             if(result){
+
                 const token = jwt.sign({email: email.toLowerCase()}, SECRET, {expiresIn: '1h'});
+                console.log('Logged in');
                 res.cookie('token', token, {httpOnly: true });
                 return res.redirect('/dashboard');
+            }else if(!result){
+                console.log('Invalid password');
+                return res.render('login.ejs', {message: 'Invalid password'});
             }
         });
     }catch(err){
@@ -235,6 +243,8 @@ app.post('/profile_delete', authenticate, async (req, res) => {
 
                 await db.query('DELETE FROM users WHERE email=$1', [req.user.email]);
                 console.log('user deleted');
+                await db.query('DELETE FROM tasks WHERE email=$1', [req.user.email]);
+                console.log('tasks deleted');
                 res.clearCookie('token');
                 res.status(200);
                 res.redirect('/logout');    

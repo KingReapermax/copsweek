@@ -1,0 +1,120 @@
+body{
+    background-color: #f0f0f0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+.error{
+    color: red;
+    font-size: 18px;
+    text-align: center;
+
+}
+.login, .register{
+    display: flex;
+    flex-flow: column wrap; 
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.dashboard, .user{
+    display: flex;
+    flex-flow: column wrap; 
+    justify-content: center;
+    align-items: center;
+    /* justify-items: center; */
+}
+/* .navbar{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    /* background-color: #007bff; */
+    /* color: white; */
+
+
+.title{
+    /* font-size: 2em; */
+    margin-bottom: 20px;
+    display:flex;
+    flex-flow: row;
+    justify-content: center;
+}
+.tasks {
+    display: flex;                /* Enable flexbox */
+    flex-direction: column;       /* Stack tasks vertically */
+    width: 100%;                  /* Stretch container to full width */
+    gap: 10px;                    /* Add gap between tasks */
+}
+
+#task-head {
+    display: flex;                /* Enable flex for task header */
+    align-self: center;           /* Align header content horizontally in the center */
+    padding: 10px;                /* Optional padding for task header */
+}
+
+.task {
+    display: flex;                
+    flex-direction: row;          /* Arrange task content horizontally */
+    justify-content: flex-start;  /* Align task content to the left */
+    align-items: center;      /* Align items to the top */
+    padding: 10px;                /* Optional padding for task */
+    border: 1px solid #ddd;      /* Optional border for task separation */
+    background-color: #f4f4f4;   /* Optional background color for task */
+    width: 100%;                  /* Ensure the task takes the full width of the container */
+    box-sizing: border-box;      /* Include padding and borders in the width */
+}
+
+.task-content {
+    display: flex;                /* Enable flex for task content */
+    flex-direction: column;       /* Stack content vertically */
+    gap: 10px;                    /* Space between lines */
+    align-items: flex-start;      /* Align content to the left */
+    width: 70%;                   /* Ensure content takes up 70% of the width */
+    min-width: 0;                 /* Prevent overflow on small screens */
+    overflow: visible;            /* Allow content to overflow vertically */
+}
+
+.task-type {
+    display: flex;                /* Enable flex for task type */
+    flex-direction: column;       /* Stack buttons vertically */
+    gap: 5px;                     /* Space out content inside task type */
+    align-items: flex-start;      /* Align buttons to the left */
+    width: 30%;                   /* Task type takes up 30% of the width */
+    justify-content: flex-start;  /* Align items to the top */
+    padding: 10px;                /* Optional padding */
+}
+
+button {
+padding: 5px 10px;
+border: none;
+cursor: pointer;
+background-color: #007bff;
+color: white;
+border-radius: 5px;
+}
+
+button:hover {
+background-color: #0056b3;
+}
+/* .form-update{
+    display: flex;
+    flex-flow:row wrap;
+    justify-content: center;
+    align-items: center;
+    /* justify-items: center; */
+ 
+#update-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px; */
+    margin: 0 auto; /* Center the button horizontally */
+}
+
+/* this is original */
