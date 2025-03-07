@@ -11,3 +11,7 @@
 
 - `server/database.sql` can be used to make the required tabled for the rest of code.
 - make a .env file with needed variables.
+
+# things used for deployment
+- `render` for ejs (`server` folder).
+- `supabase` for postgresql server.
