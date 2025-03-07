@@ -13,17 +13,27 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT ;
 const SECRET = process.env.SECRET;
-const db = new pg.Client({
-    user: process.env.DB_USER,
-    host: process.env.DB_HOST,
-    database: process.env.DB_DATABASE,
-    password: process.env.DB_PASSWORD,
-    port: process.env.DB_PORT,
-})
-db.connect();
+
+// if client is used
+
+// const db = new pg.Client({
+//     user: process.env.DB_USER,
+//     host: process.env.DB_HOST,
+//     database: process.env.DB_DATABASE,
+//     password: process.env.DB_PASSWORD,
+//     port: process.env.DB_PORT,
+// })
+// db.connect();
+
 // let users = db.query('SELECT * FROM users');
 // let tasks = db.query('SELECT * FROM tasks');
 
+// if pool is used
+const pool = new pg.Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+const db = pool;  
 
 app.use(cors());
 app.use(bodyParser.json());
