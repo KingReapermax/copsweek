@@ -1,14 +1,14 @@
 create table users(
-    id primary key serial,
+    id serial primary key,
     name text,
     email text not null unique,
     password text not null
 );
 create table tasks(
-    task_id primary key serial,
+    task_id serial primary key,
     email text not null,
     task text not null,
-    type text not null,
+    type text not null
 
 );
 
